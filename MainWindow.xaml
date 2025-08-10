@@ -1,0 +1,108 @@
+﻿<Window x:Class="BlockHouse.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BlockHouse"
+        xmlns:viewModel="clr-namespace:BlockHouse.ViewModels"
+        xmlns:converters="clr-namespace:BlockHouse.Converters"
+        mc:Ignorable="d"
+        Title="Blockhouse Barber Shop" Height="600" Width="1000"
+        WindowState="Maximized"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        Icon="/Assets/blockhouse_logo.ico"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <Window.Resources>
+        <converters:ActiveButtonToForegroundConverter x:Key="ForegroundConverter"/>
+        <converters:ActiveButtonToBackgroundConverter x:Key="BackgroundConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Navigation Bar -->
+        <StackPanel Grid.Column="0" Background="Black">
+            <StackPanel Grid.Column="0" Background="Black">
+                <StackPanel Orientation="Vertical" Width="200" HorizontalAlignment="Left" Margin="0,20">
+                    <Image Source="/Assets/blockhouse_logo_transparent_white.png" Width="150" Margin="0,0,0,20"/>
+
+                    <!-- Overview Button -->
+                    <Button
+            materialDesign:ButtonAssist.CornerRadius="8"
+            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Overview}"
+            Background="{Binding ActiveButton, Converter={StaticResource BackgroundConverter}, ConverterParameter=Overview}"
+            Command="{Binding NavigateCommand}"
+            CommandParameter="Overview"
+                        Height="Auto"
+                        Padding="0,10"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            Margin="10,5">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="DotsGrid" Width="20" Height="20" Margin="0,0,8,0"
+                                         Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Overview}"/>
+                            <TextBlock Text="Tổng quan" VerticalAlignment="Center"
+                           Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Overview}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Revenue Button -->
+                    <Button
+            materialDesign:ButtonAssist.CornerRadius="8"
+            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Revenue}"
+            Background="{Binding ActiveButton, Converter={StaticResource BackgroundConverter}, ConverterParameter=Revenue}"
+            Command="{Binding NavigateCommand}"
+                        Height="Auto"
+            CommandParameter="Revenue"
+            Style="{StaticResource MaterialDesignFlatButton}"
+                        Padding="0,10"
+            Margin="10,0,10,5">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="CashMultiple" Width="20" Height="20" Margin="0,0,8,0"
+                                         Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Revenue}"/>
+                            <TextBlock Text="Doanh thu" VerticalAlignment="Center"
+                           Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Revenue}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Employees Button -->
+                    <Button
+            materialDesign:ButtonAssist.CornerRadius="8"
+            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Employees}"
+            Background="{Binding ActiveButton, Converter={StaticResource BackgroundConverter}, ConverterParameter=Employees}"
+            Command="{Binding NavigateCommand}"
+                        Height="Auto"
+            CommandParameter="Employees"
+                        Padding="0,10"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            Margin="10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" Margin="0,0,8,0"
+                                         Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Employees}"/>
+                            <TextBlock Text="Nhân viên" VerticalAlignment="Center"
+                           Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Employees}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <!-- Content Area -->
+
+        <Border Grid.Column="1" Background="#F5F7FA" CornerRadius="20,0,0,20" Padding="20"
+                    Margin="-50,0,0,0">
+            <ScrollViewer
+              VerticalScrollBarVisibility="Hidden"
+              HorizontalScrollBarVisibility="Hidden"
+              PanningMode="Both" >
+            <ContentControl Content="{Binding CurrentView}" 
+                    Panel.ZIndex="999"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  <ApplicationIcon>Assets\blockhouse_logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\blockhouse_logo.ico" />
+    <None Remove="Assets\blockhouse_logo_color.png" />
+    <None Remove="Assets\blockhouse_logo_transparent.png" />
+    <None Remove="Assets\blockhouse_logo_transparent_white.png" />
+    <None Remove="Assets\Top1.png" />
+    <None Remove="Assets\Top2.png" />
+    <None Remove="Assets\Top3.png" />
+    <None Remove="Assets\Top4.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Haley.MVVM" Version="6.5.2" />
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\blockhouse_logo.ico" />
+    <Resource Include="Assets\blockhouse_logo_color.png" />
+    <Resource Include="Assets\blockhouse_logo_transparent.png" />
+    <Resource Include="Assets\blockhouse_logo_transparent_white.png" />
+    <Resource Include="Assets\Top1.png" />
+    <Resource Include="Assets\Top2.png" />
+    <Resource Include="Assets\Top3.png" />
+    <Resource Include="Assets\Top4.png" />
+  </ItemGroup>
+
+</Project>

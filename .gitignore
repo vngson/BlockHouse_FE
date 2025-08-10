@@ -52,3 +52,9 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+/.vs/BlockHouse/FileContentIndex
+/.vs/BlockHouse/DesignTimeBuild
+.vs/BlockHouse/v17/.suo
+/.vs/BlockHouse/v17
+/.vs/ProjectEvaluation
+/.vs/BlockHouse
