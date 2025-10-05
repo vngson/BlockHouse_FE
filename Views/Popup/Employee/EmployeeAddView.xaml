@@ -1,0 +1,107 @@
+﻿<Window x:Class="BlockHouse.Views.Popup.Employee.EmployeeAddView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d" 
+        Title="Thêm nhân viên" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        Width="500">
+
+    <Grid MouseDown="Border_MouseDown">
+        <materialDesign:Card Padding="20" Width="450" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Width="400">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Tiêu đề -->
+                <TextBlock Text="Thêm nhân viên mới" 
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}" 
+                           Grid.ColumnSpan="2"
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,20"/>
+
+                <!-- Tên nhân viên -->
+                <TextBlock Text="Họ và tên *" 
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" 
+                           Grid.Row="1" Grid.Column="0"
+                           Margin="0,0,10,10"
+                           VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                         Height="35" Padding="10,0"
+                         Margin="0,0,0,10"
+                         VerticalContentAlignment="Center"
+                         materialDesign:HintAssist.Hint="Nhập họ và tên"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+
+                <!-- Số điện thoại -->
+                <TextBlock Text="Số điện thoại *" 
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" 
+                           Grid.Row="2" Grid.Column="0"
+                           Margin="0,0,10,10"
+                           VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1"
+                         Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
+                         Height="35" Padding="10,0"
+                         Margin="0,0,0,20"
+                         VerticalContentAlignment="Center"
+                         materialDesign:HintAssist.Hint="Nhập số điện thoại"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+
+                <!-- Nút -->
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" 
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="0,10,0,0">
+                    <Button Content="Thêm"
+                            Command="{Binding SaveCommand}"
+                            Width="100"
+                            Height="35"
+                            Background="Green"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            FontWeight="SemiBold"
+                            Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Background" Value="Gray"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Đóng"
+                            Command="{Binding CloseCommand}"
+                            Width="100"
+                            Height="35"
+                            Background="Red"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            FontWeight="SemiBold"/>
+                </StackPanel>
+
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</Window>

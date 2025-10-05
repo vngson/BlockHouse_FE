@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace BlockHouse.Models.Responses
 {
@@ -10,6 +10,8 @@ namespace BlockHouse.Models.Responses
         private string _phone;
         private int _status;
         private decimal? _income;
+        private DateTime _createdAt;
+        private DateTime _updatedAt;
 
         [JsonProperty("id")]
         public int Id
@@ -46,11 +48,33 @@ namespace BlockHouse.Models.Responses
             set { _income = value; OnPropertyChanged(nameof(Income)); }
         }
 
+        [JsonProperty("created_at")]
+        public DateTime CreatedAt
+        {
+            get => _createdAt;
+            set { _createdAt = value; OnPropertyChanged(nameof(CreatedAt)); }
+        }
+
+        [JsonProperty("updated_at")]
+        public DateTime UpdatedAt
+        {
+            get => _updatedAt;
+            set { _updatedAt = value; OnPropertyChanged(nameof(UpdatedAt)); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class EmployeeListResponse
+    {
+        public List<EmployeeResponse> Employees { get; set; }
+        public int Page { get; set; }
+        public int Page_Size { get; set; }
+        public int Total_Employees { get; set; }
     }
 }

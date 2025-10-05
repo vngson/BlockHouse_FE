@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
+using System.ComponentModel;
+using static BlockHouse.Models.Responses.OrderResponse;
 
 namespace BlockHouse.Models.Responses
 {
@@ -105,5 +104,136 @@ namespace BlockHouse.Models.Responses
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+    }
+
+    public class OrderByDate
+    {
+        [JsonProperty("date")]
+        public DateTime Date { get; set; }
+
+        [JsonProperty("services")]
+        public List<OrderServiceResponse> Services { get; set; }
+
+        [JsonProperty("total")]
+        public double Total { get; set; }
+    }
+
+    public class OrderOneDateData
+    {
+        [JsonProperty("order_date")]
+        public string OrderDate { get; set; }
+
+        [JsonProperty("orders_by_date")]
+        public List<OrderByDate> OrdersByDate { get; set; }
+
+        [JsonProperty("total_orders")]
+        public int TotalOrders { get; set; }
+    }
+
+    public class OrderByEmployeeAndDate
+    {
+
+        [JsonProperty("date")]
+        public DateTime Date { get; set; }
+
+        [JsonProperty("employee_id")]
+        public int EmployeeId { get; set; }
+
+        [JsonProperty("employee_name")]
+        public string EmployeeName { get; set; }
+
+        [JsonProperty("services")]
+        public List<OrderServiceResponse> Services { get; set; }
+
+        [JsonProperty("total")]
+        public double Total { get; set; }
+    }
+
+    public class OrderByDateAndEmployeeResponse
+    {
+        [JsonProperty("order_data")]
+        public OrderByEmployeeAndDate OrderData { get; set; }
+        [JsonProperty("total_orders")]
+        public int TotalOrders { get; set; }
+    }
+
+    public class OrderListResponse
+    {
+        public List<OrderResponse> Orders { get; set; }
+        public int Page { get; set; }
+        public int Page_Size { get; set; }
+        public int Total_Orders { get; set; }
+    }
+
+    public class OrderByDateResponse
+    {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("date")]
+        public DateTime Date { get; set; }
+
+        [JsonProperty("total")]
+        public decimal Total { get; set; }
+
+        [JsonProperty("employee_id")]
+        public int? EmployeeId { get; set; }
+
+        [JsonProperty("promotion_id")]
+        public int? PromotionId { get; set; }
+
+        [JsonProperty("services")]
+        public List<OrderServiceResponse> Services { get; set; } = new List<OrderServiceResponse>();
+    }
+
+    public class OrdersByDateResponse
+    {
+        [JsonProperty("orders_by_date")]
+        public List<OrderByDateResponse> OrdersByDate { get; set; } = new List<OrderByDateResponse>();
+
+        [JsonProperty("page")]
+        public int Page { get; set; }
+
+        [JsonProperty("page_size")]
+        public int PageSize { get; set; }
+
+        [JsonProperty("total_days")]
+        public int TotalDays { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("status")]
+        public int Status { get; set; }
+    }
+
+
+    public class OrderByEmployeeAndDateResponse
+    {
+        [JsonProperty("date")]
+        public DateTime Date { get; set; } // Or use DateOnly if .NET 6+
+        [JsonProperty("employee_id")]
+        public int EmployeeId { get; set; } // Non-nullable, as filtered in service
+        [JsonProperty("employee_name")]
+        public string EmployeeName { get; set; }
+        [JsonProperty("total")]
+        public decimal Total { get; set; }
+        [JsonProperty("services")]
+        public List<OrderServiceResponse> Services { get; set; } = new List<OrderServiceResponse>();
+    }
+
+    public class OrdersByEmployeeAndDateResponse
+    {
+        [JsonProperty("revenue_by_employee")]
+        public List<OrderByEmployeeAndDateResponse> OrdersByEmployeeAndDate { get; set; } = new List<OrderByEmployeeAndDateResponse>();
+        [JsonProperty("page")]
+        public int Page { get; set; }
+        [JsonProperty("page_size")]
+        public int PageSize { get; set; }
+        [JsonProperty("total_date_employees")]
+        public int TotalDays { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("status")]
+        public int Status { get; set; }
     }
 }

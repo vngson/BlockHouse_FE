@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_LastSelectedProfileId>D:\source\BlockHouse_FE\BlockHouse\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>D:\source\BlockHouse_FE\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Update="App.xaml">
@@ -12,13 +12,55 @@
     <Compile Update="ViewModels\DashboardViewModel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Views\Components\CustomMessageBoxWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Dashboard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\EmployeesView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Popup\Employee\EmployeeAddView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\Employee\EmployeeDetailView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\Employee\EmployeeEditView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByDate\RevenueByDateDetailView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByEmployeeAndDate\RevenueByEmployeeAndDateDetailView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByEmployee\RevenueAddView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByEmployee\RevenueByEmployeeDeleteView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByEmployee\RevenueByEmployeeDetailView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\RevenueByEmployee\RevenueUpdateView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\Service\ServiceAddView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Popup\Service\ServiceEditView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\RevenueView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ServicesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

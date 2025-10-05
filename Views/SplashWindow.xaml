@@ -1,0 +1,156 @@
+﻿<Window x:Class="BlockHouse.Views.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" Width="600" Height="500"
+        WindowStartupLocation="CenterScreen" Opacity="0">
+
+    <Window.Resources>
+        <!-- Fade In -->
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:1"/>
+        </Storyboard>
+
+        <!-- Fade Out -->
+        <Storyboard x:Key="FadeOutStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.6"/>
+        </Storyboard>
+
+        <!-- Rotate Animation for orbit dots -->
+        <Storyboard x:Key="RotateOrbit" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="OrbitRotate" 
+                             Storyboard.TargetProperty="Angle"
+                             From="0" To="360" Duration="0:0:2"/>
+        </Storyboard>
+
+        <!-- Gradient Animation -->
+        <Storyboard x:Key="GradientAnimation" RepeatBehavior="Forever">
+            <ColorAnimation Storyboard.TargetName="GradientStop1"
+                            Storyboard.TargetProperty="Color"
+                            From="#E3F2FD" To="#EDE7F6" Duration="0:0:5"
+                            AutoReverse="True"/>
+            <ColorAnimation Storyboard.TargetName="GradientStop2"
+                            Storyboard.TargetProperty="Color"
+                            From="#EDE7F6" To="#FCE4EC" Duration="0:0:5"
+                            AutoReverse="True"/>
+        </Storyboard>
+
+        <!-- Scale Animation for dots with staggered timing -->
+        <Storyboard x:Key="ScaleAnimation" RepeatBehavior="Forever">
+            <!-- Dot 1 -->
+            <DoubleAnimation Storyboard.TargetName="Dot1Scale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:0"/>
+            <DoubleAnimation Storyboard.TargetName="Dot1Scale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:0"/>
+            <!-- Dot 2 (delayed by 0.5s) -->
+            <DoubleAnimation Storyboard.TargetName="Dot2Scale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetName="Dot2Scale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:0.5"/>
+            <!-- Dot 3 (delayed by 1s) -->
+            <DoubleAnimation Storyboard.TargetName="Dot3Scale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:1"/>
+            <DoubleAnimation Storyboard.TargetName="Dot3Scale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="1" To="2" Duration="0:0:1.5"
+                             AutoReverse="True" BeginTime="0:0:1"/>
+        </Storyboard>
+    </Window.Resources>
+
+    <Border CornerRadius="20" BorderThickness="1" BorderBrush="#33000000">
+        <Border.Background>
+            <LinearGradientBrush x:Name="GradientBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop x:Name="GradientStop1" Color="#E3F2FD" Offset="0"/>
+                <GradientStop x:Name="GradientStop2" Color="#EDE7F6" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+
+            <!-- Logo đen -->
+            <Image Source="/Assets/blockhouse_logo_transparent.png" Width="200" Height="200" Margin="0,0,0,30">
+                <Image.Effect>
+                    <DropShadowEffect Color="#55000000" BlurRadius="8" ShadowDepth="2"/>
+                </Image.Effect>
+            </Image>
+
+            <!-- Orbit Loader -->
+            <Canvas Width="120" Height="120" Margin="0,0,0,20">
+                <Canvas.RenderTransform>
+                    <RotateTransform x:Name="OrbitRotate" CenterX="60" CenterY="60"/>
+                </Canvas.RenderTransform>
+
+                <!-- Dot 1 -->
+                <Ellipse x:Name="Dot1" Width="15" Height="15" Canvas.Left="100" Canvas.Top="55">
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="Dot1Scale" CenterX="7.5" CenterY="7.5"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#2196F3" Offset="0"/>
+                            <GradientStop Color="#9C27B0" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#662196F3" BlurRadius="10" ShadowDepth="0"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+
+                <!-- Dot 2 -->
+                <Ellipse x:Name="Dot2" Width="15" Height="15" Canvas.Left="55" Canvas.Top="10">
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="Dot2Scale" CenterX="7.5" CenterY="7.5"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#9C27B0" Offset="0"/>
+                            <GradientStop Color="#E91E63" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#669C27B0" BlurRadius="10" ShadowDepth="0"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+
+                <!-- Dot 3 -->
+                <Ellipse x:Name="Dot3" Width="15" Height="15" Canvas.Left="10" Canvas.Top="55">
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="Dot3Scale" CenterX="7.5" CenterY="7.5"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#E91E63" Offset="0"/>
+                            <GradientStop Color="#2196F3" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#66E91E63" BlurRadius="10" ShadowDepth="0"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+            </Canvas>
+
+            <!-- Loading Text -->
+            <TextBlock Text="Đang khởi động BlockHouse..."
+                       FontSize="16" FontWeight="Medium"
+                       Foreground="#333333" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Border>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource RotateOrbit}"/>
+            <BeginStoryboard Storyboard="{StaticResource FadeInStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource GradientAnimation}"/>
+            <BeginStoryboard Storyboard="{StaticResource ScaleAnimation}"/>
+        </EventTrigger>
+    </Window.Triggers>
+</Window>

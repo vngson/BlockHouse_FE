@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
-using Newtonsoft.Json;
 
 namespace BlockHouse.Helpers
 {
@@ -41,8 +37,11 @@ namespace BlockHouse.Helpers
 
             _httpClient.BaseAddress = new Uri(baseAddress);
             _httpClient.DefaultRequestHeaders.Accept.Clear();
+            // Accept both application/json and application/json; charset=utf-8 to avoid Content-Type warnings
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json", 0.9) { CharSet = "utf-8" });
 
             if (!string.IsNullOrEmpty(authToken))
             {
@@ -54,12 +53,12 @@ namespace BlockHouse.Helpers
         }
 
         public static async Task<GetResponseApi<T>> SendApi<T>(
-            HttpMethod method,
-            string url,
-            bool isShowLoading,
-            CancellationToken cancellationToken,
-            object body = null,
-            Dictionary<string, string> queryParams = null)
+    HttpMethod method,
+    string url,
+    bool isShowLoading,
+    CancellationToken cancellationToken,
+    object body = null,
+    Dictionary<string, string> queryParams = null)
         {
             try
             {
@@ -87,24 +86,65 @@ namespace BlockHouse.Helpers
                 }
 
                 var response = await _httpClient.SendAsync(request, cancellationToken);
-                var content = await response.Content.ReadAsStringAsync();
 
-                if (!response.IsSuccessStatusCode)
+                // Nếu API thành công nhưng không có body (DELETE, 204, v.v.)
+                if (response.IsSuccessStatusCode)
                 {
-                    return GetResponseApi<T>.Error(
-                        $"API request failed: {content}",
-                        response.StatusCode);
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        return GetResponseApi<T>.Success(default, "Request successful (no content)");
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    // Nếu 200 mà body rỗng → vẫn coi là success
+                    if (string.IsNullOrWhiteSpace(content))
+                    {
+                        return GetResponseApi<T>.Success(default, "Request successful (empty body)");
+                    }
+
+                    // Nếu có body mà không phải JSON → trả về raw string
+                    var contentType = response.Content.Headers.ContentType?.ToString();
+                    if (string.IsNullOrEmpty(contentType) || !contentType.Contains("application/json"))
+                    {
+                        return GetResponseApi<T>.Success((T)(object)content, "Request successful (non-JSON response)");
+                    }
+
+                    // Deserialize theo chuẩn
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse<T>>(content, _jsonSettings);
+
+                    if (apiResponse == null)
+                    {
+                        return GetResponseApi<T>.Error("API response is empty or invalid", HttpStatusCode.BadRequest);
+                    }
+
+                    return GetResponseApi<T>.Success(apiResponse.Data, apiResponse.Message ?? "Request successful");
                 }
 
-                var apiResponse = JsonConvert.DeserializeObject<ApiResponse<T>>(content, _jsonSettings);
-                if (apiResponse == null || apiResponse.Data == null)
+                // Trường hợp không thành công
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                try
                 {
+                    // Parse error JSON theo cùng cấu trúc ApiResponse
+                    var errorObj = JsonConvert.DeserializeObject<ApiResponse<object>>(errorContent, _jsonSettings);
+
+                    var errMsg = errorObj?.Message ?? "Unknown error";
+
                     return GetResponseApi<T>.Error(
-                        "API response is empty or invalid",
-                        HttpStatusCode.BadRequest);
+                        errMsg,
+                        response.StatusCode
+                    );
+                }
+                catch
+                {
+                    // Nếu parse fail (không phải JSON) thì fallback
+                    return GetResponseApi<T>.Error(
+                        errorContent,
+                        response.StatusCode
+                    );
                 }
 
-                return GetResponseApi<T>.Success(apiResponse.Data, apiResponse.Message);
             }
             catch (JsonException jsonEx)
             {
@@ -126,5 +166,6 @@ namespace BlockHouse.Helpers
                 }
             }
         }
+
     }
 }

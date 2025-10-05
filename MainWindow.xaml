@@ -18,10 +18,8 @@
     <Window.Resources>
         <converters:ActiveButtonToForegroundConverter x:Key="ForegroundConverter"/>
         <converters:ActiveButtonToBackgroundConverter x:Key="BackgroundConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
-    <Window.DataContext>
-        <viewModel:MainWindowViewModel/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -29,8 +27,9 @@
         </Grid.ColumnDefinitions>
         <!-- Navigation Bar -->
         <StackPanel Grid.Column="0" Background="Black">
-            <StackPanel Grid.Column="0" Background="Black">
-                <StackPanel Orientation="Vertical" Width="200" HorizontalAlignment="Left" Margin="0,20">
+            <DockPanel LastChildFill="True" Height="Auto">
+                <!-- Nội dung chính (logo + buttons) -->
+                <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Width="200" HorizontalAlignment="Left" Margin="0,20">
                     <Image Source="/Assets/blockhouse_logo_transparent_white.png" Width="150" Margin="0,0,0,20"/>
 
                     <!-- Overview Button -->
@@ -47,7 +46,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="DotsGrid" Width="20" Height="20" Margin="0,0,8,0"
                                          Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Overview}"/>
-                            <TextBlock Text="Tổng quan" VerticalAlignment="Center"
+                            <TextBlock Text="Tổng quan" VerticalAlignment="Center" Width="65"
                            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Overview}"/>
                         </StackPanel>
                     </Button>
@@ -62,11 +61,11 @@
             CommandParameter="Revenue"
             Style="{StaticResource MaterialDesignFlatButton}"
                         Padding="0,10"
-            Margin="10,0,10,5">
+            Margin="10,5">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="CashMultiple" Width="20" Height="20" Margin="0,0,8,0"
                                          Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Revenue}"/>
-                            <TextBlock Text="Doanh thu" VerticalAlignment="Center"
+                            <TextBlock Text="Doanh thu" VerticalAlignment="Center" Width="65"
                            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Revenue}"/>
                         </StackPanel>
                     </Button>
@@ -81,16 +80,42 @@
             CommandParameter="Employees"
                         Padding="0,10"
             Style="{StaticResource MaterialDesignFlatButton}"
-            Margin="10,0">
+            Margin="10,5">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" Margin="0,0,8,0"
                                          Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Employees}"/>
-                            <TextBlock Text="Nhân viên" VerticalAlignment="Center"
+                            <TextBlock Text="Nhân viên" VerticalAlignment="Center" Width="65"
                            Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Employees}"/>
                         </StackPanel>
                     </Button>
+
+                    <Button
+    materialDesign:ButtonAssist.CornerRadius="8"
+    Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Services}"
+    Background="{Binding ActiveButton, Converter={StaticResource BackgroundConverter}, ConverterParameter=Services}"
+    Command="{Binding NavigateCommand}"
+    CommandParameter="Services"
+    Style="{StaticResource MaterialDesignFlatButton}"
+    Height="Auto"
+    Padding="0,10"
+    Margin="10,5">
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Briefcase" Width="20" Height="20" Margin="0,0,8,0"
+                                 Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Services}"/>
+                            <TextBlock Text="Dịch vụ" VerticalAlignment="Center" Width="65"
+                   Foreground="{Binding ActiveButton, Converter={StaticResource ForegroundConverter}, ConverterParameter=Services}"/>
+                        </StackPanel>
+                    </Button>
+
                 </StackPanel>
-            </StackPanel>
+                <TextBlock Text="Version 1.0.3"
+                   DockPanel.Dock="Bottom"
+                   HorizontalAlignment="Center"
+                           FontWeight="SemiBold"
+                   Foreground="White"
+                   Margin="0,250,50,20"/>
+            </DockPanel>
         </StackPanel>
         <!-- Content Area -->
 
@@ -104,5 +129,12 @@
                     Panel.ZIndex="999"/>
             </ScrollViewer>
         </Border>
+
+        <Grid x:Name="OverlayGrid"
+      Grid.ColumnSpan="2"
+      Background="#80000000"
+      Visibility="{Binding IsOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+      Panel.ZIndex="1000">
+        </Grid>
     </Grid>
 </Window>

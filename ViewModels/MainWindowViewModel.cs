@@ -1,8 +1,7 @@
 ﻿// MainWindowViewModel.cs
 using BlockHouse.Views;
-using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace BlockHouse.ViewModels
 {
@@ -13,13 +12,39 @@ namespace BlockHouse.ViewModels
 
         public MainWindowViewModel()
         {
-            // Set Dashboard as default view
-            CurrentView = new Dashboard();
-            ActiveButton = "Overview";
-
             // Initialize command
             NavigateCommand = new RelayCommand<string>(Navigate);
+
+            WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this, (r, m) =>
+            {
+                Navigate(m.Destination);
+            });
+
+            WeakReferenceMessenger.Default.Register<ToggleOverlayMessage>(this, (r, m) =>
+            {
+
+                IsOverlayVisible = m.IsVisible;
+            });
+            Navigate("Overview");
         }
+        public class ToggleOverlayMessage
+        {
+            public bool IsVisible { get; set; }
+        }
+
+        private bool _isOverlayVisible;
+        public bool IsOverlayVisible
+        {
+            get => _isOverlayVisible;
+            set
+            {
+                _isOverlayVisible = value;
+                OnPropertyChanged(nameof(IsOverlayVisible));
+            }
+        }
+
+        // Add this message registration in constructor
+
 
         public object CurrentView
         {
@@ -41,24 +66,31 @@ namespace BlockHouse.ViewModels
             }
         }
 
+        private bool _backendStartedSuccessfully;
+
         public ICommand NavigateCommand { get; }
 
-        private void Navigate(string destination)
+        public void Navigate(string destination)
         {
-            ActiveButton = destination;
-
             switch (destination)
             {
                 case "Overview":
-                    CurrentView = new Dashboard();
+                    if (ActiveButton != "Overview")
+                    {
+                        CurrentView = new Dashboard();
+                    }
                     break;
                 case "Revenue":
-                     CurrentView = new RevenueView();
+                    CurrentView = new RevenueView();
                     break;
                 case "Employees":
-                     CurrentView = new EmployeesView();
+                    CurrentView = new EmployeesView();
+                    break;
+                case "Services":
+                    CurrentView = new ServicesView();
                     break;
             }
+            ActiveButton = destination;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlockHouse.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace BlockHouse.Views
         public EmployeesView()
         {
             InitializeComponent();
+            DataContext = new EmployeesViewModel();
         }
     }
 }

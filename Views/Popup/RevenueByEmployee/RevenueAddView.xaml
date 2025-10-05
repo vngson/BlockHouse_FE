@@ -1,0 +1,240 @@
+﻿<Window x:Class="BlockHouse.Views.Popup.RevenueByEmployee.RevenueAddView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BlockHouse.ViewModels.Popup.RevenueByEmployee"
+        mc:Ignorable="d" 
+        Title="Thêm đơn hàng mới" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Height"
+        Width="700"
+        ResizeMode="NoResize">
+    <Grid MouseDown="Border_MouseDown">
+        <materialDesign:Card Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Width="600">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Title -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- DateTime -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Employee -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Services -->
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Total -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Buttons -->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Tiêu đề -->
+                <TextBlock Text="Thêm đơn hàng mới" 
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}" 
+                           Grid.ColumnSpan="2"
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,20"/>
+
+                <!-- Ngày giờ -->
+                <Grid Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,10" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Ngày giờ" 
+               Style="{StaticResource MaterialDesignBody1TextBlock}" 
+               Grid.Column="0"
+               Margin="0,0,10,0"
+               VerticalAlignment="Center"/>
+
+                    <Border Grid.Column="1"
+            Background="LightGray" CornerRadius="15" Height="30" Padding="10,0"
+            HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding CurrentDateTime, StringFormat='dd/MM/yyyy HH:mm:ss'}" 
+                   VerticalAlignment="Center"/>
+                    </Border>
+                </Grid>
+
+
+                <!-- Nhân viên -->
+                <Grid Grid.Row="2" VerticalAlignment="Center" Margin="0,0,0,10" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Nhân viên" 
+               Style="{StaticResource MaterialDesignBody1TextBlock}" 
+               Grid.Column="0"
+               Margin="0,0,10,0"
+               VerticalAlignment="Center"/>
+
+                    <ComboBox Grid.Column="1"
+              ItemsSource="{Binding Employees}"
+              DisplayMemberPath="Name"
+              SelectedValuePath="Id"
+              SelectedValue="{Binding SelectedEmployeeId}"/>
+                </Grid>
+
+
+                <!-- Dịch vụ -->
+                <TextBlock Text="Dịch vụ" 
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" 
+                           Grid.Row="3" Grid.Column="0"
+                           Margin="0,0,10,0"
+                           VerticalAlignment="Top"/>
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,10">
+                    <ItemsControl ItemsSource="{Binding OrderServices}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Chọn dịch vụ -->
+                                    <ComboBox Grid.Column="0"
+                  ItemsSource="{Binding DataContext.Services, RelativeSource={RelativeSource AncestorType=Window}}"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Id"
+                                              FontSize="14"
+                  SelectedValue="{Binding ServiceId}"
+                  Margin="0,0,10,0"
+                  VerticalAlignment="Center"/>
+
+                                    <!-- Nút trừ -->
+                                    <Button Grid.Column="1"
+        Width="30"
+        Height="30"
+        Margin="0,0,5,0"
+        Command="{Binding DataContext.DecreaseQuantityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+        CommandParameter="{Binding}"
+        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+        Background="Black"
+        VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Minus"
+                             Width="20"
+                             Height="20"
+                             Foreground="White"/>
+                                    </Button>
+
+                                    <!-- TextBox nhập số lượng -->
+                                    <TextBox Grid.Column="2"
+                 Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalContentAlignment="Center"
+                 Width="50"
+                 Margin="0,0,5,0"
+                 materialDesign:HintAssist.Hint="Số lượng"
+                 VerticalAlignment="Center"/>
+
+                                    <!-- Nút tăng số lượng -->
+                                    <Button Grid.Column="3"
+        Width="30"
+        Height="30"
+        Margin="0,0,20,0"
+        Command="{Binding DataContext.IncreaseQuantityCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+        CommandParameter="{Binding}"
+        Style="{StaticResource MaterialDesignIconButton}"
+        Background="Black"
+        VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Plus" 
+                             Width="20" 
+                             Height="20" 
+                             Foreground="White"/>
+                                    </Button>
+
+                                    <!-- Nút xoá dịch vụ -->
+                                    <Button Grid.Column="4"
+        Width="30"
+        Height="30"
+        Command="{Binding DataContext.RemoveServiceCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+        CommandParameter="{Binding}"
+        Style="{StaticResource MaterialDesignIconButton}"
+        Background="Red"
+        VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Close" 
+                             Width="20" 
+                             Height="20" 
+                             Foreground="White"/>
+                                    </Button>
+
+                                </Grid>
+                            </DataTemplate>
+
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="Thêm dịch vụ"
+                            Background="Black"
+                            Command="{Binding AddServiceCommand}"
+                            Margin="0,10,0,0"/>
+                </StackPanel>
+
+                <!-- Tổng tiền -->
+                <Border Grid.Row="5" Grid.ColumnSpan="2"
+        Background="#FFF8F8F8"
+        CornerRadius="8"
+        Padding="10"
+        Margin="0,10,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Tổng tiền" 
+                   Style="{StaticResource MaterialDesignBody1TextBlock}" 
+                   Grid.Column="0"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="1"
+                   Text="{Binding TotalDisplay}"
+                   FontWeight="Bold"
+                   FontSize="16"
+                   Foreground="{DynamicResource PrimaryHueMidBrush}"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+
+                <!-- Nút -->
+                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" 
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Right">
+                    <Button Content="Lưu"
+                            Command="{Binding SaveCommand}"
+                            Width="100"
+                            Height="35"
+                            Background="Green"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Margin="0,0,10,0"/>
+                    <Button Content="Đóng"
+                            Command="{Binding CloseCommand}"
+                            Width="100"
+                            Height="35"
+                            Background="Red"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</Window>

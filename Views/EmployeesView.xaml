@@ -4,9 +4,345 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BlockHouse.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialDesign ="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="FocusOuterBorderStyle" TargetType="Border">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="#3F51B5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CenteredSmartHintStyle" TargetType="materialDesign:SmartHint">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Background="Transparent" Style="{StaticResource MaterialDesignFlatButton}" BorderThickness="0"
+        Command="{Binding GoBackCommand}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20" Margin="0,0,8,0" Background="Transparent"
+             Foreground="Black"/>
+                    <TextBlock Text="Trở về" VerticalAlignment="Center"
+Foreground="Black"/>
+                </StackPanel>
+            </Button>
+
+            <TextBlock Grid.Column="1" TextAlignment="Center" Text="Nhân viên" FontSize="22" FontWeight="SemiBold"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="20,0,20,10">
+            <DockPanel Margin="0,20">
+
+                <!-- Button + nằm sát phải -->
+                <Button DockPanel.Dock="Right"
+                Width="40"
+                Height="40"
+                Margin="10,0,0,0"
+                Command="{Binding AddCommand}"
+                Background="Black"
+                Foreground="White"
+                BorderBrush="Transparent"
+                Content="+"
+                FontSize="20"
+                VerticalAlignment="Center"
+                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"/>
+
+                <!-- Các control khác nằm bên trái -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <!-- Ô tìm kiếm -->
+                    <Border Background="#80EFE8D8" CornerRadius="15" Padding="10" Height="45">
+                        <DockPanel VerticalAlignment="Center">
+                            <TextBox
+                        Style="{StaticResource MaterialDesignTextBox}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        VerticalContentAlignment="Center"
+                        Foreground="Black"
+                        FontSize="14"
+                        Margin="10,0,0,0"
+                        Width="350"
+                        materialDesign:HintAssist.Hint="Tìm kiếm"
+                        materialDesign:HintAssist.Background="Transparent"
+                        materialDesign:TextFieldAssist.UnderlineBrush="Gray"/>
+                            <materialDesign:PackIcon Kind="Search"
+                                             Width="20"
+                                             Height="20"
+                                             Foreground="Black"
+                                             VerticalAlignment="Center"
+                                             Margin="5,0,0,0"
+                                             DockPanel.Dock="Right"/>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- DatePicker From -->
+                    <Border Width="135" Height="Auto" BorderThickness="1" Background="#EEEEEE" BorderBrush="#B0B0B0" CornerRadius="25" Margin="20,0,0,0">
+                        <DatePicker x:Name="DatePickerFrom"
+                            Width="100"
+                            SelectedDateFormat="Short"
+                            SelectedDate="{Binding StartDate, Mode=TwoWay}"
+                            VerticalContentAlignment="Center" 
+                            BorderThickness="0">
+                            <DatePicker.CalendarStyle>
+                                <Style TargetType="Calendar" BasedOn="{StaticResource {x:Type Calendar}}">
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </DatePicker.CalendarStyle>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:InvokeCommandAction Command="{Binding DatePickerLoadedCommand}" 
+                                                   CommandParameter="{Binding ElementName=DatePickerFrom}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </DatePicker>
+                    </Border>
+
+                    <!-- Dấu mũi tên -->
+                    <TextBlock Text="→"
+                       VerticalAlignment="Center" 
+                       Margin="10,5" 
+                       FontSize="30" 
+                       FontWeight="DemiBold"/>
+
+                    <!-- DatePicker To -->
+                    <Border Width="135" Height="50" BorderThickness="1" BorderBrush="#B0B0B0" CornerRadius="25" Margin="0,0,10,0" Background="#EEEEEE">
+                        <DatePicker x:Name="DatePickerTo"
+                            Width="100"
+                            SelectedDateFormat="Short"
+                            SelectedDate="{Binding EndDate, Mode=TwoWay}"
+                            VerticalContentAlignment="Center">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:InvokeCommandAction Command="{Binding DatePickerLoadedCommand}" 
+                                                   CommandParameter="{Binding ElementName=DatePickerTo}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </DatePicker>
+                    </Border>
+
+                    <!-- Button Tìm -->
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                    Width="90"
+                    Height="36"
+                    Margin="10,0,0,0"
+                    Background="Black"
+                    Foreground="White"
+                    VerticalAlignment="Center"
+                    Command="{Binding SearchCommand}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Magnify" Width="18" Height="18" VerticalAlignment="Center"/>
+                            <TextBlock Text="Tìm" Margin="6,0,0,0" VerticalAlignment="Center" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+
+
+        <Grid Grid.Row="2" Margin="20,0,20,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" 
+            Background="Black" 
+            BorderThickness="1"
+            BorderBrush="Black"
+            CornerRadius="5,5,0,0" 
+            Height="40">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <!-- STT -->
+                        <ColumnDefinition Width="2*"/>
+                        <!-- Họ và Tên -->
+                        <ColumnDefinition Width="2*"/>
+                        <!-- Số điện thoại -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Trạng thái -->
+                        <ColumnDefinition Width="2*"/>
+                        <!-- Thu nhập -->
+                        <ColumnDefinition Width="80"/>
+                        <!-- Xem -->
+                        <ColumnDefinition Width="80"/>
+                        <!-- Sửa -->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="STT" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="1" Text="Họ và Tên" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="2" Text="Số điện thoại" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="3" Text="Trạng thái" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="4" Text="Thu nhập" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="5" Text="Xem" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="6" Text="Sửa" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                </Grid>
+            </Border>
+
+            <!-- Data Items -->
+            <Border Grid.Row="1" BorderThickness="0" BorderBrush="LightGray" CornerRadius="0,0,5,5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding EmployeeItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1" 
+        BorderBrush="LightGray" 
+        Background="#E9E9E9"
+        Margin="0,2"
+        Padding="0">
+                                    <Grid Height="40">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- STT -->
+                                        <TextBlock Grid.Column="0" Text="{Binding Id}" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                        <!-- Họ và Tên -->
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                        <!-- Số điện thoại -->
+                                        <TextBlock Grid.Column="2" Text="{Binding Phone}" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                        <!-- Trạng thái -->
+                                        <TextBlock Grid.Column="3" Text="{Binding Status}" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                        <!-- Thu nhập -->
+                                        <TextBlock Grid.Column="4" Text="{Binding IncomeDisplay}" 
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                        <!-- Xem -->
+                                        <Button Grid.Column="5" 
+                                        Command="{Binding DataContext.ViewCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="Eye" Width="20" Height="20" Foreground="Black"/>
+                                        </Button>
+
+                                        <!-- Sửa -->
+                                        <Button Grid.Column="6" 
+                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="SquareEditOutline" Width="20" Height="20" Foreground="Black"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <!-- B: Các nút điều hướng, căn giữa tuyệt đối -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- Các Border chứa nút -->
+                <Border CornerRadius="10" BorderThickness="1" BorderBrush="Black" Margin="0,0,5,0">
+                    <Button  IsEnabled="{Binding DataContext.IsFirstPageEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent" BorderThickness="0" Cursor="Hand" Style="{DynamicResource MaterialDesignOutlinedButton}" x:Name="FirstPageBtn" Padding="5" Command="{Binding DataContext.FirstPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <materialDesign:PackIcon Kind="SkipPrevious" Foreground="Black" Width="24" Height="24"/>
+                    </Button>
+                </Border>
+
+                <Border CornerRadius="10" BorderThickness="1" BorderBrush="Black" Margin="0,0,5,0">
+                    <Button  IsEnabled="{Binding DataContext.IsPrevPageEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent" BorderThickness="0" Style="{DynamicResource MaterialDesignOutlinedButton}" x:Name="PrevPageBtn" Padding="5" Command="{Binding DataContext.PrevPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <materialDesign:PackIcon Kind="NavigateBefore" Foreground="Black" Width="24" Height="24"/>
+                    </Button>
+                </Border>
+
+                <Border CornerRadius="10" BorderThickness="1" BorderBrush="Black" Margin="0,0,5,0">
+                    <TextBox Width="60"
+         BorderThickness="0"
+         Background="Transparent"
+         HorizontalContentAlignment="Center"
+         VerticalContentAlignment="Center"
+         IsReadOnly="True"
+         Cursor="Arrow" 
+         Focusable="False"
+         Foreground="#091F40"
+         FontSize="15"
+         Text="{Binding CurrentPage}" />
+                </Border>
+
+                <Border CornerRadius="10" BorderThickness="1" BorderBrush="Black" Margin="0,0,5,0">
+                    <Button  IsEnabled="{Binding DataContext.IsNextPageEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent" BorderThickness="0" Style="{DynamicResource MaterialDesignOutlinedButton}" x:Name="NextPageBtn" Padding="5" Command="{Binding DataContext.NextPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <materialDesign:PackIcon Kind="NavigateNext" Foreground="Black" Width="24" Height="24"/>
+                    </Button>
+                </Border>
+
+                <Border CornerRadius="10" BorderThickness="1" BorderBrush="Black" Margin="0,0,5,0">
+                    <Button IsEnabled="{Binding DataContext.IsLastPageEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent" BorderThickness="0" Style="{DynamicResource MaterialDesignOutlinedButton}" x:Name="LastPageBtn" Padding="5" Command="{Binding DataContext.LastPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <materialDesign:PackIcon Kind="SkipNext" Foreground="Black" Width="24" Height="24"/>
+                    </Button>
+                </Border>
+            </StackPanel>
+
+            <!-- C: Text nằm ngay bên phải cụm nút -->
+            <Label x:Name="ResultLabel"
+       FontSize="15" Foreground="#4D4D4D" FontWeight="Bold"
+       VerticalAlignment="Center"
+       HorizontalAlignment="Center"
+       Margin="20,0,0,0"
+       Padding="0"
+       Width="Auto"
+       Content="{Binding ResultText}">
+                <Label.RenderTransform>
+                    <TranslateTransform X="150" />
+                </Label.RenderTransform>
+            </Label>
+        </Grid>
+
     </Grid>
 </UserControl>

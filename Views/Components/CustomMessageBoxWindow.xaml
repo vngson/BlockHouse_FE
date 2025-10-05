@@ -1,0 +1,82 @@
+﻿<Window x:Class="BlockHouse.Views.Components.CustomMessageBoxWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Custom MessageBox" 
+        Width="400" 
+        Height="Auto" 
+        MinHeight="200"
+        WindowStartupLocation="CenterScreen" 
+        WindowStyle="None" 
+        AllowsTransparency="True" 
+        Background="Transparent" 
+        ResizeMode="NoResize"
+        SizeToContent="Height">
+    <Border CornerRadius="10" 
+            Background="{DynamicResource MaterialDesignPaper}" 
+            Effect="{StaticResource MaterialDesignElevationShadow8}"
+            Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title and Icon -->
+            <StackPanel Grid.Row="0" 
+                        Orientation="Vertical" 
+                        HorizontalAlignment="Center" 
+                        Margin="0 0 0 10">
+                <materialDesign:PackIcon Kind="{Binding IconKind}" 
+                                         Width="40" 
+                                         Height="40" 
+                                         HorizontalAlignment="Center"
+                                         Foreground="{Binding TitleBrush}" 
+                                         VerticalAlignment="Center" 
+                                         Margin="0 0 5 10"/>
+                <TextBlock Text="{Binding Title}" 
+                           FontWeight="Bold" 
+                           FontSize="20" 
+                           HorizontalAlignment="Center"
+                           Foreground="{Binding TitleBrush}" 
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Message -->
+            <TextBlock Grid.Row="1" 
+                       Text="{Binding Message}" 
+                       TextWrapping="Wrap" 
+                       FontSize="16" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"
+                       Margin="0 10"/>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0 20 0 0">
+                <ItemsControl ItemsSource="{Binding Buttons}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Text}" 
+                                    Command="{Binding DataContext.ButtonClickCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                    CommandParameter="{Binding Text}" 
+                                    Margin="5 0 0 0" 
+                                    Style="{StaticResource MaterialDesignRaisedButton}" 
+                                    materialDesign:ButtonAssist.CornerRadius="5" 
+                                    MinWidth="80"
+                                    Background="{Binding Color}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

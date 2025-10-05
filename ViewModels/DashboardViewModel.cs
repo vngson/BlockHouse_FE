@@ -1,13 +1,12 @@
 ﻿using BlockHouse.Api;
-using BlockHouse.Helpers;
+using BlockHouse.Helpers; // Thêm using cho AppLogger
 using BlockHouse.Models.Responses;
+using BlockHouse.ViewModels.Components;
+using CommunityToolkit.Mvvm.Messaging;
 using LiveCharts;
 using LiveCharts.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
+using static BlockHouse.ViewModels.MainWindowViewModel;
 
 namespace BlockHouse.ViewModels
 {
@@ -69,39 +68,63 @@ namespace BlockHouse.ViewModels
 
         public DashboardViewModel()
         {
-            _dashboardApi = new DashboardApi();
-            YFormatter = value => (value / 1000000).ToString("N1") + "M";
+            try
+            {
+                AppLogger.Instance.LogInfo("Khởi tạo DashboardViewModel");
+                _dashboardApi = new DashboardApi();
+                YFormatter = value => (value / 1000000).ToString("N1") + "M";
 
-            // Initialize collections to avoid null reference
-            TopEmployees = new List<EmployeeRanking>();
-            RevenueSeries = new SeriesCollection();
-            Months = Array.Empty<string>();
+                TopEmployees = new List<EmployeeRanking>();
+                RevenueSeries = new SeriesCollection();
+                Months = Array.Empty<string>();
 
-            // Load data on initialization
-            _ = LoadDashboardDataAsync();
+                // Load data on initialization
+                _ = LoadDashboardDataAsync();
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Instance.LogError("Exception in DashboardViewModel constructor", ex);
+                // Set default values to prevent null references
+                TopEmployees = new List<EmployeeRanking>();
+                RevenueSeries = new SeriesCollection();
+                Months = new[] { "Tháng 1", "Tháng 2", "Tháng 3" };
+            }
         }
 
-        public async Task LoadDashboardDataAsync(int? month = null, int? year = null)
+        public async Task LoadDashboardDataAsync(int? month = 8, int? year = 2025)
         {
+            AppLogger.Instance.LogInfo($"Bắt đầu tải dữ liệu dashboard: month={month}, year={year}");
             try
             {
                 IsLoading = true;
 
-                var response = await _dashboardApi.GetDashboardData(month, year);
+                var response = await _dashboardApi.GetDashboardData();
 
                 if (response.IsSuccess && response.Data != null)
                 {
+                    AppLogger.Instance.LogInfo("Tải dữ liệu dashboard thành công");
                     ProcessApiResponse(response.Data);
                 }
                 else
                 {
-                    // Handle error (could display a message)
-                    Console.WriteLine($"Error loading dashboard data: {response.Message}");
+                    AppLogger.Instance.LogError($"Lỗi tải dữ liệu dashboard: {response.Message}");
+                    CustomMessageBox.Show(
+                        "Lấy dữ liệu không thành công!",
+                        new List<string> { "OK" },
+                        MessageType.Error
+                    );
+                    WeakReferenceMessenger.Default.Send(new ToggleOverlayMessage { IsVisible = false });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception when loading dashboard data: {ex.Message}");
+                AppLogger.Instance.LogError("Exception khi tải dữ liệu dashboard", ex);
+                CustomMessageBox.Show(
+                    "Lấy dữ liệu không thành công!",
+                    new List<string> { "OK" },
+                    MessageType.Error
+                );
+                WeakReferenceMessenger.Default.Send(new ToggleOverlayMessage { IsVisible = false });
             }
             finally
             {
@@ -111,6 +134,7 @@ namespace BlockHouse.ViewModels
 
         private void ProcessApiResponse(DashboardResponse data)
         {
+            AppLogger.Instance.LogInfo("Xử lý dữ liệu dashboard từ API");
             // Map data from API
             TotalServiceSales = data.TotalServiceSales;
             TotalRevenue = (decimal)data.TotalRevenue;
