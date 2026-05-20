@@ -109,7 +109,7 @@
                     </Button>
 
                 </StackPanel>
-                <TextBlock Text="Version 1.0.3"
+                <TextBlock Text="Version 1.0.5"
                    DockPanel.Dock="Bottom"
                    HorizontalAlignment="Center"
                            FontWeight="SemiBold"

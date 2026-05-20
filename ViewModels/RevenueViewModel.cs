@@ -33,8 +33,10 @@ namespace BlockHouse.ViewModels
         public class OrderItem
         {
             public string Datetime { get; set; }
+            public string Month { get; set; }
             public string EmployeeName { get; set; }
             public int Id { get; set; }
+            public int OrderCount { get; set; }
             public int OrderId { get; set; }
             public int? PromotionId { get; set; }
             public List<ServiceSummary> Services { get; set; }
@@ -90,6 +92,7 @@ namespace BlockHouse.ViewModels
         public ICommand DateCommand { get; }
 
         public ICommand EmployeeAndDateCommand { get; }
+        public ICommand EmployeeAndMonthCommand { get; }
         public ICommand DeleteCommand { get; }
 
         private bool _isLoading;
@@ -137,6 +140,17 @@ namespace BlockHouse.ViewModels
             }
         }
 
+        private Brush _empAMonthBackground;
+        public Brush EmpAMonthBackground
+        {
+            get => _empAMonthBackground;
+            set
+            {
+                _empAMonthBackground = value;
+                OnPropertyChanged(nameof(EmpAMonthBackground));
+            }
+        }
+
         public static readonly SolidColorBrush ActiveBackground
         = new SolidColorBrush(Colors.Black);
 
@@ -162,6 +176,13 @@ namespace BlockHouse.ViewModels
         {
             get => _byEmployeeGridVisibility;
             set => SetProperty(ref _byEmployeeGridVisibility, value);
+        }
+
+        private bool _byEmployeeAMonthGridVisibility;
+        public bool ByEmployeeAMonthGridVisibility
+        {
+            get => _byEmployeeAMonthGridVisibility;
+            set => SetProperty(ref _byEmployeeAMonthGridVisibility, value);
         }
 
         private Visibility _addBtnVisibility = Visibility.Visible;
@@ -338,12 +359,17 @@ namespace BlockHouse.ViewModels
             EmployeeAndDateCommand = new RelayCommand(
                 async () => await ExecuteGetLayoutByEmployeeAndDate()
             );
+            EmployeeAndMonthCommand = new RelayCommand(
+                async () => await ExecuteGetLayoutByEmployeeAndMonth()
+            );
 
             EmployeeBtnBackground = ActiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = InactiveBackground;
+            EmpAMonthBackground = InactiveBackground;
             ByOrderGridVisibility = true;
             ByDateGridVisibility = false;
+            ByEmployeeAMonthGridVisibility = false;
 
             ServiceColumnMaxWidth = 200;
             EmployeeColumnWidth = new GridLength(1, GridUnitType.Star);
@@ -405,9 +431,11 @@ namespace BlockHouse.ViewModels
             EmployeeBtnBackground = ActiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = InactiveBackground;
+            EmpAMonthBackground = InactiveBackground;
             ByOrderGridVisibility = true;
             ByDateGridVisibility = false;
             ByEmployeeGridVisibility = false;
+            ByEmployeeAMonthGridVisibility = false;
 
             await LoadData(1, StartDate, EndDate, SearchKeyword, true);
         }
@@ -418,8 +446,10 @@ namespace BlockHouse.ViewModels
             EmployeeBtnBackground = InactiveBackground;
             DateBtnBackground = ActiveBackground;
             EmpADateBackground = InactiveBackground;
+            EmpAMonthBackground = InactiveBackground;
             ByOrderGridVisibility = false;
             ByEmployeeGridVisibility = false;
+            ByEmployeeAMonthGridVisibility = false;
             ByDateGridVisibility = true;
 
             await LoadData(1, StartDate, EndDate, SearchKeyword, true);
@@ -427,13 +457,30 @@ namespace BlockHouse.ViewModels
 
         private async Task ExecuteGetLayoutByEmployeeAndDate()
         {
-            AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo nhân viên");
+            AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo nhân viên/ngày");
             EmployeeBtnBackground = InactiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = ActiveBackground;
+            EmpAMonthBackground = InactiveBackground;
             ByOrderGridVisibility = false;
             ByDateGridVisibility = false;
             ByEmployeeGridVisibility = true;
+            ByEmployeeAMonthGridVisibility = false;
+
+            await LoadData(1, StartDate, EndDate, SearchKeyword, true);
+        }
+
+        private async Task ExecuteGetLayoutByEmployeeAndMonth()
+        {
+            AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo nhân viên/tháng");
+            EmployeeBtnBackground = InactiveBackground;
+            DateBtnBackground = InactiveBackground;
+            EmpADateBackground = InactiveBackground;
+            EmpAMonthBackground = ActiveBackground;
+            ByOrderGridVisibility = false;
+            ByDateGridVisibility = false;
+            ByEmployeeGridVisibility = false;
+            ByEmployeeAMonthGridVisibility = true;
 
             await LoadData(1, StartDate, EndDate, SearchKeyword, true);
         }
@@ -1059,7 +1106,7 @@ namespace BlockHouse.ViewModels
                         AppLogger.Instance.LogInfo($"Tải dữ liệu doanh thu theo ngày thành công. Số lượng: {response.Data.OrdersByDate.Count}");
                         items = response.Data.OrdersByDate.Select((o, index) => new OrderItem
                         {
-                            Id = index + 1,
+                            Id = PageSize * (CurrentPage - 1) + index + 1,
                             Datetime = o.Date.ToString("dd/MM/yyyy"),
                             OrderId = o.Id,
                             EmployeeName = "", // No employee name in OrdersByDateResponse
@@ -1089,17 +1136,56 @@ namespace BlockHouse.ViewModels
                         items = new List<OrderItem>();
                     }
                 }
-                else
+                else if (EmpADateBackground == ActiveBackground)
                 {
                     var response = await _revenueApi.GetOrdersByEmployeeAndDate(page, 9, startDate, endDate, keyword);
                     if (response.IsSuccess && response.Data != null)
                     {
-                        AppLogger.Instance.LogInfo($"Tải dữ liệu doanh thu theo nhân viên thành công. Số lượng: {response.Data.OrdersByEmployeeAndDate.Count}");
+                        AppLogger.Instance.LogInfo($"Tải dữ liệu doanh thu theo nhân viên/ngày thành công. Số lượng: {response.Data.OrdersByEmployeeAndDate.Count}");
                         items = response.Data.OrdersByEmployeeAndDate.Select((o, index) => new OrderItem
                         {
-                            Id = index + 1,
+                            Id = PageSize * (CurrentPage - 1) + index + 1,
                             Datetime = o.Date.ToString("dd/MM/yyyy"),
                             OrderId = o.EmployeeId,
+                            EmployeeName = o.EmployeeName,
+                            PromotionId = 0,
+                            Services = o.Services.Select(s => new ServiceSummary
+                            {
+                                Name = s.Name,
+                                Quantity = s.Quantity
+                            }).ToList(),
+                            Total = o.Total
+                        }).ToList();
+
+                        var totaOrders = response.Data.TotalDays;
+                        TotalPages = (int)Math.Ceiling((double)totaOrders / PageSize);
+                        OnPropertyChanged(ResultText);
+                        if (isShowMessage == true) AppLogger.Instance.LogInfo(
+                            "Tải dữ liệu doanh thu thành công!");
+                    }
+                    else
+                    {
+                        AppLogger.Instance.LogError($"Lỗi tải dữ liệu doanh thu theo nhân viên/ngày: {response.Message}");
+                        CustomMessageBox.Show(
+                            "Lỗi tải dữ liệu doanh thu theo nhân viên!",
+                            new List<string> { "OK" },
+                            MessageType.Error
+                            );
+                        items = new List<OrderItem>();
+                    }
+                }
+                else
+                {
+                    var response = await _revenueApi.GetOrdersByEmployeeAndMonth(page, 9, startDate, endDate, keyword);
+                    if (response.IsSuccess && response.Data != null)
+                    {
+                        AppLogger.Instance.LogInfo($"Tải dữ liệu doanh thu theo nhân viên/tháng thành công. Số lượng: {response.Data.OrdersByEmployeeAndMonth.Count}");
+                        items = response.Data.OrdersByEmployeeAndMonth.Select((o, index) => new OrderItem
+                        {
+                            Id = PageSize * (CurrentPage - 1) + index + 1,
+                            Month = o.Month.ToString() + "/" + o.Year.ToString(),
+                            OrderId = o.EmployeeId,
+                            OrderCount = o.OrderCount,
                             EmployeeName = o.EmployeeName,
                             PromotionId = 0,
                             Services = o.Services.Select(s => new ServiceSummary

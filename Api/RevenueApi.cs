@@ -131,6 +131,45 @@ namespace BlockHouse.Api
             );
         }
 
+        public Task<GetResponseApi<OrdersByEmployeeAndMonthResponse>> GetOrdersByEmployeeAndMonth(
+        int? page = 1,
+        int? pageSize = 10,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        string? Keyword = null,
+        bool isShowLoading = true
+    )
+        {
+            var url = $"{prefixPath}/revenue_monthly_by_employee";
+
+            // Chuẩn bị body JSON
+            var body = new Dictionary<string, object>();
+
+            if (page.HasValue)
+                body["page"] = page.Value;
+
+            if (pageSize.HasValue)
+                body["page_size"] = pageSize.Value;
+
+            if (startDate.HasValue)
+                body["date_from"] = startDate.Value.ToString("yyyy-MM-dd");
+
+            if (endDate.HasValue)
+                body["date_to"] = endDate.Value.ToString("yyyy-MM-dd");
+
+            if (!string.IsNullOrEmpty(Keyword))
+                body["keyword"] = Keyword;
+
+            return ApiHelper.SendApi<OrdersByEmployeeAndMonthResponse>(
+                HttpMethod.Post,
+                url,
+                isShowLoading,
+                CancellationToken.None,
+                body,
+                null
+            );
+        }
+
         public async Task<GetResponseApi<OrderResponse>> GetOrderById(int id, bool isShowLoading = true)
         {
             var url = $"{prefixPath}/{id}";

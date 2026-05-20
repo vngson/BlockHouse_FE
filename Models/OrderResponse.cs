@@ -231,9 +231,35 @@ namespace BlockHouse.Models.Responses
         public int PageSize { get; set; }
         [JsonProperty("total_date_employees")]
         public int TotalDays { get; set; }
-        [JsonProperty("message")]
-        public string Message { get; set; }
-        [JsonProperty("status")]
-        public int Status { get; set; }
+    }
+
+    public class OrderByEmployeeAndMonthResponse
+    {
+        [JsonProperty("month")]
+        public int Month { get; set; }
+        [JsonProperty("employee_id")]
+        public int EmployeeId { get; set; } // Non-nullable, as filtered in service
+        [JsonProperty("employee_name")]
+        public string EmployeeName { get; set; }
+        [JsonProperty("total")]
+        public decimal Total { get; set; }
+        [JsonProperty("order_count")]
+        public int OrderCount { get; set; }
+        [JsonProperty("year")]
+        public int Year { get; set; }
+        [JsonProperty("services")]
+        public List<OrderServiceResponse> Services { get; set; } = new List<OrderServiceResponse>();
+    }
+
+    public class OrdersByEmployeeAndMonthResponse
+    {
+        [JsonProperty("revenue_monthly_by_employee")]
+        public List<OrderByEmployeeAndMonthResponse> OrdersByEmployeeAndMonth { get; set; } = new List<OrderByEmployeeAndMonthResponse>();
+        [JsonProperty("page")]
+        public int Page { get; set; }
+        [JsonProperty("page_size")]
+        public int PageSize { get; set; }
+        [JsonProperty("total_records")]
+        public int TotalDays { get; set; }
     }
 }

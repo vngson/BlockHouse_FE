@@ -168,7 +168,7 @@ Foreground="Black"/>
                 Foreground="White"/>
                 </Border>
 
-                <!-- Nút theo tháng -->
+                <!-- Nút theo ngày -->
                 <Border CornerRadius="15" Background="{Binding DateBtnBackground}" BorderThickness="0" BorderBrush="Transparent" Width="200" x:Name="DateBtn"  Margin="0,0,20,0">
                     <Button Content="Theo ngày" 
                 Style="{StaticResource MaterialDesignFlatButton}"
@@ -179,14 +179,25 @@ Foreground="Black"/>
                 </Border>
 
                 <!-- Nút theo nhân viên -->
-                <Border CornerRadius="15" Background="{Binding EmpADateBackground}" BorderThickness="0" BorderBrush="Transparent" Width="200" x:Name="EmployeeBtn">
-                    <Button Content="Theo nhân viên" 
+                <Border CornerRadius="15" Background="{Binding EmpADateBackground}" BorderThickness="0" BorderBrush="Transparent" Width="200" x:Name="EmployeeBtn"  Margin="0,0,20,0">
+                    <Button Content="Theo NV/Ngày" 
  Style="{StaticResource MaterialDesignFlatButton}"
  Background="Transparent"
                                  Command="{Binding DataContext.EmployeeAndDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
  BorderBrush="Transparent"
  Foreground="White"/>
                 </Border>
+                
+                <Border CornerRadius="15" Background="{Binding EmpAMonthBackground}" BorderThickness="0" BorderBrush="Transparent" Width="200" x:Name="EmployeeByMonthBtn">
+                    <Button Content="Theo NV/Tháng"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            Background="Transparent"
+            Command="{Binding DataContext.EmployeeAndMonthCommand,
+                              RelativeSource={RelativeSource AncestorType=UserControl}}"
+            BorderBrush="Transparent"
+            Foreground="White"/>
+                </Border>
+
             </StackPanel>
 
             <Button Grid.Column="1"
@@ -743,6 +754,178 @@ ToolTipService.ToolTip="{Binding EmployeeName}" />
                                                           Height="20" 
                                                           Foreground="Black"/>
                                         </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="ByEmployeeAMonthGrid" Grid.Row="3" Margin="20,10" Visibility="{Binding DataContext.ByEmployeeAMonthGridVisibility, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="*"/>
+                <!-- Data Items -->
+            </Grid.RowDefinitions>
+
+            <!-- Table Header -->
+            <Border Grid.Row="0" 
+         Background="Black" 
+         BorderThickness="1"
+         BorderBrush="Black"
+         CornerRadius="5,5,0,0" 
+         Height="40">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <!--<ColumnDefinition Width="80"/>-->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" 
+                    Text="STT" 
+                    Foreground="White"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="1" 
+                    Text="Tháng" 
+                    Foreground="White"
+                    TextAlignment="Left"
+                    VerticalAlignment="Center" 
+                    Margin="10,0" 
+                    FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="2" 
+                    Text="Số đơn hàng" 
+                    Foreground="White"
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Stretch"
+            TextAlignment="Center"
+            TextWrapping="NoWrap"
+            TextTrimming="CharacterEllipsis"
+                    Margin="10,0" 
+                    FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="3" 
+                    Text="Thu nhập" 
+                    Foreground="White"
+                    VerticalAlignment="Center" 
+                    TextAlignment="Center"
+                    Margin="10,0" 
+                    FontWeight="SemiBold" 
+        HorizontalAlignment="Stretch"/>
+                    <TextBlock Grid.Column="4" 
+           Text="Nhân Viên" 
+           Foreground="White"
+           TextAlignment="Center"
+           VerticalAlignment="Center" 
+           Margin="10,0" 
+           FontWeight="SemiBold"/>
+                    <!--<TextBlock Grid.Column="5" 
+                    Text="Xem" 
+                    Foreground="White"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    FontWeight="SemiBold"/>-->
+                </Grid>
+            </Border>
+
+            <!-- Data Items -->
+            <Border Grid.Row="1" 
+         BorderThickness="0,0,0,0" 
+         BorderBrush="LightGray" 
+         CornerRadius="0,0,5,5">
+                <ScrollViewer x:Name="sv3" VerticalScrollBarVisibility="Auto"
+               HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding RevenueItems}"
+                   BorderThickness="0" Padding="0"
+                   Width="{Binding ActualWidth, ElementName=sv3}"
+                   HorizontalAlignment="Stretch">
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="0,0,0,1" 
+                             BorderBrush="LightGray" 
+                             Background="#E9E9E9"
+                             Margin="0,2"
+                             Padding="0">
+                                    <Grid Height="40">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <!--<ColumnDefinition Width="80"/>-->
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- STT -->
+                                        <TextBlock Grid.Column="0" 
+                                        Text="{Binding Id}" 
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Center"/>
+
+                                        <!-- Tháng -->
+                                        <TextBlock Grid.Column="1" 
+Text="{Binding Month}" 
+VerticalAlignment="Center" 
+                    HorizontalAlignment="Left" 
+Margin="10,0"
+TextTrimming="CharacterEllipsis"
+ToolTipService.ToolTip="{Binding Datetime}" />
+
+                                        <!--Số lượng đơn hàng -->
+                                        <Grid Grid.Column="2" HorizontalAlignment="Stretch">
+                                            <TextBlock Text="{Binding OrderCount}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Left"
+                                        TextWrapping="NoWrap"
+                                        TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+
+                                        <!-- Thu nhập -->
+                                        <TextBlock Grid.Column="3" 
+Text="{Binding TotalDisplay}" 
+VerticalAlignment="Center" 
+Margin="10,0"
+TextAlignment="Center"
+HorizontalAlignment="Center"
+TextTrimming="CharacterEllipsis"
+ToolTipService.ToolTip="{Binding Total}" />
+
+                                        <TextBlock Grid.Column="4" 
+Text="{Binding EmployeeName}" 
+TextAlignment="Center"
+VerticalAlignment="Center"
+Margin="10,0"
+                                        TextTrimming="CharacterEllipsis"
+ToolTipService.ToolTip="{Binding EmployeeName}" />
+
+                                        <!-- Xem Button -->
+                                        <!--<Button Grid.Column="5" 
+                                     Command="{Binding DataContext.ViewCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                     CommandParameter="{Binding}"
+                                     Background="Transparent" 
+                                     
+                             Style="{StaticResource MaterialDesignFlatButton}"
+                                     BorderThickness="0"
+                                     HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="Eye" 
+                                                          Width="20" 
+                                                          Height="20" 
+                                                          Foreground="Black"/>
+                                        </Button>-->
                                     </Grid>
                                 </Border>
                             </DataTemplate>
