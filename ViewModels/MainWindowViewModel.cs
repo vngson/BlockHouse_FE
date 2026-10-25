@@ -1,4 +1,3 @@
-﻿// MainWindowViewModel.cs
 using BlockHouse.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
@@ -10,9 +9,13 @@ namespace BlockHouse.ViewModels
         private object _currentView;
         private string _activeButton;
 
+        private Dashboard _dashboardView;
+        private RevenueView _revenueView;
+        private EmployeesView _employeesView;
+        private ServicesView _servicesView;
+
         public MainWindowViewModel()
         {
-            // Initialize command
             NavigateCommand = new RelayCommand<string>(Navigate);
 
             WeakReferenceMessenger.Default.Register<ChangeViewMessage>(this, (r, m) =>
@@ -22,11 +25,11 @@ namespace BlockHouse.ViewModels
 
             WeakReferenceMessenger.Default.Register<ToggleOverlayMessage>(this, (r, m) =>
             {
-
                 IsOverlayVisible = m.IsVisible;
             });
             Navigate("Overview");
         }
+
         public class ToggleOverlayMessage
         {
             public bool IsVisible { get; set; }
@@ -42,9 +45,6 @@ namespace BlockHouse.ViewModels
                 OnPropertyChanged(nameof(IsOverlayVisible));
             }
         }
-
-        // Add this message registration in constructor
-
 
         public object CurrentView
         {
@@ -66,8 +66,6 @@ namespace BlockHouse.ViewModels
             }
         }
 
-        private bool _backendStartedSuccessfully;
-
         public ICommand NavigateCommand { get; }
 
         public void Navigate(string destination)
@@ -77,17 +75,21 @@ namespace BlockHouse.ViewModels
                 case "Overview":
                     if (ActiveButton != "Overview")
                     {
-                        CurrentView = new Dashboard();
+                        _dashboardView ??= new Dashboard();
+                        CurrentView = _dashboardView;
                     }
                     break;
                 case "Revenue":
-                    CurrentView = new RevenueView();
+                    _revenueView ??= new RevenueView();
+                    CurrentView = _revenueView;
                     break;
                 case "Employees":
-                    CurrentView = new EmployeesView();
+                    _employeesView ??= new EmployeesView();
+                    CurrentView = _employeesView;
                     break;
                 case "Services":
-                    CurrentView = new ServicesView();
+                    _servicesView ??= new ServicesView();
+                    CurrentView = _servicesView;
                     break;
             }
             ActiveButton = destination;

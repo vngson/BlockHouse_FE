@@ -7,7 +7,7 @@ namespace BlockHouse.Api
 {
     public class ServiceApi
     {
-        private static readonly string prefixPath = "/api/v1/service";
+        private static readonly string prefixPath = "/api/v1/services";
         private static readonly string baseUrl = "http://127.0.0.1:5000/";
 
         public ServiceApi()

@@ -226,13 +226,11 @@ namespace BlockHouse.ViewModels
                 editVm.RequestClose += () =>
                 {
                     dialog.Close();
-                    WeakReferenceMessenger.Default.Send(new ToggleOverlayMessage { IsVisible = false });
                 };
 
                 dialog.Closed += async (s, e) =>
                 {
                     WeakReferenceMessenger.Default.Send(new ToggleOverlayMessage { IsVisible = false });
-                    // Refresh data after editing
                     await LoadData(CurrentPage, SearchKeyword);
                 };
 

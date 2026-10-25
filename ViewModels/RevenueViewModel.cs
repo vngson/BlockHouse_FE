@@ -23,6 +23,8 @@ namespace BlockHouse.ViewModels
 {
     public class RevenueViewModel : ViewModelBase
     {
+        private enum RevenueViewMode { ByOrder, ByDate, ByEmployeeAndDate, ByEmployeeAndMonth }
+        private RevenueViewMode _currentMode = RevenueViewMode.ByOrder;
 
         public class ServiceSummary
         {
@@ -152,10 +154,10 @@ namespace BlockHouse.ViewModels
         }
 
         public static readonly SolidColorBrush ActiveBackground
-        = new SolidColorBrush(Colors.Black);
+            = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1C1917"));
 
         public static readonly SolidColorBrush InactiveBackground
-            = new SolidColorBrush(Color.FromArgb(204, 20, 20, 20));
+            = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#78716C"));
 
         private bool _byOrderGridVisibility;
         public bool ByOrderGridVisibility
@@ -428,6 +430,7 @@ namespace BlockHouse.ViewModels
         private async Task ExecuteGetLayoutByEmployee()
         {
             AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo đơn hàng");
+            _currentMode = RevenueViewMode.ByOrder;
             EmployeeBtnBackground = ActiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = InactiveBackground;
@@ -443,6 +446,7 @@ namespace BlockHouse.ViewModels
         private async Task ExecuteGetLayoutByDate()
         {
             AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo ngày");
+            _currentMode = RevenueViewMode.ByDate;
             EmployeeBtnBackground = InactiveBackground;
             DateBtnBackground = ActiveBackground;
             EmpADateBackground = InactiveBackground;
@@ -458,6 +462,7 @@ namespace BlockHouse.ViewModels
         private async Task ExecuteGetLayoutByEmployeeAndDate()
         {
             AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo nhân viên/ngày");
+            _currentMode = RevenueViewMode.ByEmployeeAndDate;
             EmployeeBtnBackground = InactiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = ActiveBackground;
@@ -473,6 +478,7 @@ namespace BlockHouse.ViewModels
         private async Task ExecuteGetLayoutByEmployeeAndMonth()
         {
             AppLogger.Instance.LogInfo("Chuyển sang layout doanh thu theo nhân viên/tháng");
+            _currentMode = RevenueViewMode.ByEmployeeAndMonth;
             EmployeeBtnBackground = InactiveBackground;
             DateBtnBackground = InactiveBackground;
             EmpADateBackground = InactiveBackground;
@@ -1060,7 +1066,7 @@ namespace BlockHouse.ViewModels
                 CurrentPage = (int)page;
 
                 List<OrderItem> items;
-                if (EmployeeBtnBackground == ActiveBackground)
+                if (_currentMode == RevenueViewMode.ByOrder)
                 {
                     var response = await _revenueApi.GetOrdersByEmployee(page, 9, startDate, endDate, keyword);
                     if (response.IsSuccess && response.Data != null)
@@ -1083,7 +1089,7 @@ namespace BlockHouse.ViewModels
 
                         var totaOrders = response.Data.Total_Orders;
                         TotalPages = (int)Math.Ceiling((double)totaOrders / PageSize);
-                        OnPropertyChanged(ResultText);
+                        OnPropertyChanged(nameof(ResultText));
                         if (isShowMessage == true) AppLogger.Instance.LogInfo(
                             "Tải dữ liệu doanh thu thành công!");
                     }
@@ -1098,7 +1104,7 @@ namespace BlockHouse.ViewModels
                         items = new List<OrderItem>();
                     }
                 }
-                else if (DateBtnBackground == ActiveBackground)
+                else if (_currentMode == RevenueViewMode.ByDate)
                 {
                     var response = await _revenueApi.GetOrdersByDate(page, 9, startDate, endDate, keyword);
                     if (response.IsSuccess && response.Data != null)
@@ -1121,7 +1127,7 @@ namespace BlockHouse.ViewModels
 
                         var totaOrders = response.Data.TotalDays;
                         TotalPages = (int)Math.Ceiling((double)totaOrders / PageSize);
-                        OnPropertyChanged(ResultText);
+                        OnPropertyChanged(nameof(ResultText));
                         if (isShowMessage == true) AppLogger.Instance.LogInfo(
                             "Tải dữ liệu doanh thu thành công!");
                     }
@@ -1136,7 +1142,7 @@ namespace BlockHouse.ViewModels
                         items = new List<OrderItem>();
                     }
                 }
-                else if (EmpADateBackground == ActiveBackground)
+                else if (_currentMode == RevenueViewMode.ByEmployeeAndDate)
                 {
                     var response = await _revenueApi.GetOrdersByEmployeeAndDate(page, 9, startDate, endDate, keyword);
                     if (response.IsSuccess && response.Data != null)
@@ -1159,7 +1165,7 @@ namespace BlockHouse.ViewModels
 
                         var totaOrders = response.Data.TotalDays;
                         TotalPages = (int)Math.Ceiling((double)totaOrders / PageSize);
-                        OnPropertyChanged(ResultText);
+                        OnPropertyChanged(nameof(ResultText));
                         if (isShowMessage == true) AppLogger.Instance.LogInfo(
                             "Tải dữ liệu doanh thu thành công!");
                     }
@@ -1198,7 +1204,7 @@ namespace BlockHouse.ViewModels
 
                         var totaOrders = response.Data.TotalDays;
                         TotalPages = (int)Math.Ceiling((double)totaOrders / PageSize);
-                        OnPropertyChanged(ResultText);
+                        OnPropertyChanged(nameof(ResultText));
                         if (isShowMessage == true) AppLogger.Instance.LogInfo(
                             "Tải dữ liệu doanh thu thành công!");
                     }
@@ -1229,7 +1235,6 @@ namespace BlockHouse.ViewModels
             finally
             {
                 IsLoading = false;
-                WeakReferenceMessenger.Default.Send(new ToggleOverlayMessage { IsVisible = false });
             }
         }
     }

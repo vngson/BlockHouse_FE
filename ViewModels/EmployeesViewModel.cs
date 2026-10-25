@@ -414,7 +414,7 @@ namespace BlockHouse.ViewModels
 
                     var totaEmployees = response.Data.Total_Employees;
                     TotalPages = (int)Math.Ceiling((double)totaEmployees / PageSize);
-                    OnPropertyChanged(ResultText);
+                    OnPropertyChanged(nameof(ResultText));
 
                 }
                 else
