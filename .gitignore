@@ -62,3 +62,20 @@ nunit-*.xml
 /.vs/BlockHouse_FE/FileContentIndex
 /.vs/BlockHouse_FE/v17
 /.vs
+
+# Generated offline UI and installer artifacts
+web/
+publish/
+
+.qa/
+.commandcode/
+*.user
+backend-config.json
+remembered-login.json
+*.db
+*.db-*
+*.sqlite*
+*.bak
+.env
+.env.*
+!.env.example
